@@ -57,6 +57,7 @@
 #include "llvm/Transforms/Obfuscation/Split.h"
 #include "llvm/Transforms/Obfuscation/Substitution.h"
 #include "llvm/Transforms/Obfuscation/StringObfuscation.h"
+#include "llvm/Transforms/Obfuscation/SymbolObfuscation.h"
 #include "llvm/Transforms/Obfuscation/CryptoUtils.h"
 
 using namespace llvm;
@@ -176,6 +177,9 @@ static cl::opt<std::string> Seed("seed", cl::init(""),
 
 static cl::opt<bool> StringObf("sobf", cl::init(false),
                            cl::desc("Enable the string obfuscation"));
+
+static cl::opt<bool> SymbolObf("smobf", cl::init(false),
+                               cl::desc("Enable the symbol obfuscation"));
 
 // This option is used in simplifying testing SampleFDO optimizations for
 // profile loading.
@@ -721,6 +725,7 @@ void PassManagerBuilder::populateModulePassManager(
   #endif
   MPM.add(createFlattening(Flattening));
   MPM.add(createStringObfuscation(StringObf));
+  MPM.add(llvm::createSymbolObfuscation(SymbolObf));
 
   // If all optimizations are disabled, just run the always-inline pass and,
   // if enabled, the function merging pass.
